@@ -44,6 +44,8 @@ router.put('/updateUserInfo', async (req, res) => {
         }
 });
 
+
+// 注册添加
 router.post('/register', async (req, res) => {
         const { username, email, password } = req.body;
         try {
@@ -61,5 +63,19 @@ router.post('/register', async (req, res) => {
         }
 });
 
-
+// 登录接口
+router.post('/login', (req, res) => {
+        const { email, password } = req.body;
+        // User.findOne({}, function (req, data) {
+        //         res.send(data)
+        // })
+        // 在这里进行用户名和密码的验证
+        if (email === 'admin' && password === '123456') {
+          // 登录成功
+          res.json({ message: '登录成功' });
+        } else {
+          // 登录失败
+          res.status(401).json({ message: '用户名或密码错误' });
+        }
+      });
 module.exports = router;
