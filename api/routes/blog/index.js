@@ -1,29 +1,32 @@
 const express = require('express');
 const router = express.Router();
-const Blog = require('../../model/blog')
-/* 查 */
+const { authenticateToken } = require('../../../middlewares/authMiddleware');
+const {BlogController} = require('../../controller/BlogController')
+
 // 查询所有blog
-router.get('/', function (req, res, next) {
-        Blog.find({}, function (req, data) {
-                res.send(data)
-        })
-});
+router.get('/getBlogList',BlogController.getBlogList);
 
 /* 查某个blog */
-router.get('/:id', async function (req, res) {
-        // _id要和数据库中的字段保持一致
-        const _id = req.params.id;
-        console.log(_id);
-        try {
-                const blog = await Blog.findById(_id);
-                if (!blog) {
-                        return res.status(404).json({ error: '没有这个博客' });
-                }
-                res.send(blog);
-                return
-        } catch (error) {
-                return res.status(500).json({ error: '网络错误' });
-        }
-});
+router.get('/getBlogById/:id',BlogController.getBlogById );
 
+/* 创建blog */
+router.post('/createBlog',authenticateToken,BlogController.createBlog );
+
+// 删除博客
+router.delete('/deleteBlog/:id',authenticateToken,BlogController.deleteBlogById );
+
+// 修改博客
+router.put('/updateBlog/:id',authenticateToken,BlogController.updateBlogById)
+
+// 根据用户id查找个人博客
+router.get('/getBlogByUserId/:id',authenticateToken,BlogController.getBlogByUserId)
+
+// 根据分类id查找博客
+router.get('/getBlogByLabelId/:id',BlogController.getBlogByLabelId)
+
+// 根据博客的title模糊查询
+router.get('/getBlogByTitle',BlogController.getBlogByTitle)
+
+// 点赞博客
+router.post('/lickBlog',authenticateToken,BlogController.lickBlog)
 module.exports = router;

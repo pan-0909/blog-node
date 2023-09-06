@@ -2,18 +2,32 @@ var mongoose = require('../config/db');
 var Schema = mongoose.Schema;
 // 声明一个数据集 对象
 var blogSchema = new Schema({
-    blogname: {
+    title: {
         type: String,
     },
-    password:{
-        type:String
+    label: {
+        type: String
     },
-    email:{
-        type:String
-    }
+    content: {
+        type: String
+    },
+    createTime: {
+        type: String
+    },
+    author: {
+        type: String
+    },
+    userId: {
+        type: String
+    },
+    labelId: {
+        type: Number
+    },
+    likes: { type: Number, default: 0 },
+    likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 
 
-const blogModel = mongoose.model('blog', blogSchema, "Blogs")
+const BlogModel = mongoose.model('blog', blogSchema, "Blogs")
 // 将数据模型暴露出去
-module.exports = blogModel
+module.exports = BlogModel

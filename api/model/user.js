@@ -10,6 +10,9 @@ var userSchema = new Schema({
     },
     email:{
         type:String
+    },
+    _id:{
+        type:String
     }
 });
 
@@ -19,6 +22,6 @@ var userSchema = new Schema({
     userSchema 是定义模型结构的模式对象。
     "demo" 是与模型关联的集合名称。数据库中
  */
-const userModel = mongoose.model('user', userSchema, "Users")
+const UserModel = mongoose.model('user', userSchema, "Users")
 // 将数据模型暴露出去
-module.exports = userModel
+module.exports = UserModel
