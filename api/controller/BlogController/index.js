@@ -42,10 +42,9 @@ class BlogController {
      * @return {*}
      */
     static async createBlog(req, res) {
-        const { title, label, content, createTime, author } = req.body;
+        const { title, label, content, createTime, author, userId, labelId } = req.body;
         try {
-            // 创建新用户
-            const newBlog = new BlogModel({ title, label, content, createTime, author });
+            const newBlog = new BlogModel({ title, label, content, createTime, author, userId, labelId });
             console.log(newBlog);
             const savedBlog = await newBlog.save();
             return res.status(200).json({ message: "创建成功", savedBlog });
@@ -145,40 +144,104 @@ class BlogController {
         }
     }
 
+    /******* 
+     * @description: 博客的点赞和取消
+     * @param {*} req
+     * @param {*} res
+     * @return {*}
+     */
     static async lickBlog(req, res) {
         try {
-            const blogId = req.body.BlogId;
-            const userId = req.body.userId; 
-
+            const blogId = req.body.blogId;
+            const userId = req.body.userId;
             // 查询博客
-            const blog = await Blog.findById(blogId);
-
+            const blog = await BlogModel.findById(blogId);
             if (!blog) {
                 return res.status(404).json({ message: '博客不存在' });
             }
 
             // 检查当前用户是否已经点赞了该博客
             const hasLiked = blog.likedBy.includes(userId);
-
+            console.log(hasLiked);
             if (hasLiked) {
-                return res.status(400).json({ message: '你已经点赞了该博客' });
+                // 减少点赞数
+                blog.likes--;
+                blog.likedBy = blog.likedBy.filter((id) => { id !== userId });
+                // 保存更新后的博客
+                await blog.save();
+                // 将当前用户添加到已点赞用户列表中
+                return res.status(200).json({ message: '取消点赞成功！', likes: blog.likes });
+            } else {
+                // 增加点赞数
+                blog.likes++;
+                // 将当前用户添加到已点赞用户列表中
+                blog.likedBy.push(userId);
+                // 保存更新后的博客
+                await blog.save();
+                return res.json({ message: '点赞成功', likes: blog.likes });
             }
-
-            // 增加点赞数
-            blog.likes++;
-
-            // 将当前用户添加到已点赞用户列表中
-            blog.likedBy.push(userId);
-
-            // 保存更新后的博客
-            await blog.save();
-
-            return res.json({ message: '点赞成功', likes: blog.likes });
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: '服务器错误' });
         }
 
+    }
+
+    /******* 
+     * @description: 博客的收藏
+     * @param {*} req
+     * @return {*}
+     */
+    static async collectBlog(req, res) {
+        try {
+            const blogId = req.body.blogId;
+            const userId = req.body.userId;
+            // 查询博客
+            const blog = await BlogModel.findById(blogId);
+            if (!blog) {
+                return res.status(404).json({ message: '博客不存在' });
+            }
+
+            // 检查当前用户是否已经点赞了该博客
+            const hasCollected = blog.collectedBy.includes(userId);
+            console.log(hasCollected);
+            if (hasCollected) {
+                // 减少点赞数
+                blog.collects--;
+                blog.collectedBy = blog.collectedBy.filter((id) => { id !== userId });
+                // 保存更新后的博客
+                await blog.save();
+                // 将当前用户添加到已点赞用户列表中
+                return res.status(200).json({ message: '取消收藏成功！', collects: blog.collects });
+            } else {
+                // 增加点赞数
+                blog.collects++;
+                // 将当前用户添加到已点赞用户列表中
+                blog.collectedBy.push(userId);
+                // 保存更新后的博客
+                await blog.save();
+                return res.json({ message: '收藏成功', collects: blog.collects });
+            }
+        } catch (error) {
+            return res.status(500).json({ message: error });
+        }
+
+    }
+
+    /******* 
+     * @description: 查询用户收藏的博客
+     * @param {*} req
+     * @param {*} res
+     * @return {*}
+     */
+    static async getCollectBlogByUserId(req, res) {
+        const userId = req.params.userId
+        try {
+            const collectedBlogs = await BlogModel.find({ likedBy: userId });
+            return res.status(200).json({ collectedBlogs });
+        } catch (error) {
+            return res.status(500).json({ message: error });
+        }
     }
 
 }

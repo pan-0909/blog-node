@@ -105,7 +105,7 @@ class UserController {
                 return res.status(401).json({ error: '邮箱或密码错误' });
             }
             // 生成 JWT 令牌
-            const token = jwt.sign({ userId: data._id }, 'secret-key', { expiresIn: '1h' });
+            const token = jwt.sign({ userId: data._id }, 'secret-key', { expiresIn: '24h' });
             // 返回令牌给客户端
             return res.status(401).json({ token });
         })

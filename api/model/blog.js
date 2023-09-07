@@ -18,13 +18,15 @@ var blogSchema = new Schema({
         type: String
     },
     userId: {
-        type: String
+        type: Number
     },
     labelId: {
         type: Number
     },
     likes: { type: Number, default: 0 },
-    likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+    likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    collects: { type: Number, default: 0 },
+    collectedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 
 

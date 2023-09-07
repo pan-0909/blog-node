@@ -27,6 +27,12 @@ router.get('/getBlogByLabelId/:id',BlogController.getBlogByLabelId)
 // 根据博客的title模糊查询
 router.get('/getBlogByTitle',BlogController.getBlogByTitle)
 
-// 点赞博客
+// 点赞博客or取消
 router.post('/lickBlog',authenticateToken,BlogController.lickBlog)
+
+//收藏博客or取消
+router.post('/collectBlog',authenticateToken,BlogController.collectBlog)
+
+//查询用户收藏的博客
+router.get('/getCollectBlogByUserId/:userId',authenticateToken,BlogController.getCollectBlogByUserId)
 module.exports = router;
