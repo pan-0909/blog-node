@@ -110,12 +110,37 @@ class UserController {
             return res.status(401).json({ token });
         })
     }
+
+    /******* 
+     * @description: 修改密码接口
+     * @param {*} req
+     * @param {*} res
+     * @return {*}
+     */
+    static async changePassword(req, res) {
+        const { email, oldPassword, newPassword } = req.body;
+        try {
+            // 在用户集合中查找匹配的用户
+            const user = await UserModel.findOne({ email, password: oldPassword });
+            if (!user) {
+                return res.status(401).json({ error: '邮箱或密码错误' });
+            }
+            // 更新用户密码
+            user.password = newPassword;
+            await user.save();
+            return res.status(200).json({ message: '密码修改成功' });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: '服务器错误' });
+        }
+    }
+
 }
 
 
 
 
-module.exports = {UserController}
+module.exports = { UserController }
 
 
 

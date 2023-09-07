@@ -17,6 +17,7 @@ router.post('/register', UserController.register);
 // 登录接口
 router.post('/login', UserController.login);
 
-
+// 修改密码
+router.post('/changePassword',authenticateToken, UserController.changePassword);
 
 module.exports = router;
