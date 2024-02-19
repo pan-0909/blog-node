@@ -2,13 +2,13 @@
  * @Author: xx
  * @Date: 2023-09-01 20:39:57
  * @LastEditors: Do not edit
- * @LastEditTime: 2023-09-01 20:47:27
+ * @LastEditTime: 2023-12-16 16:30:26
  * @Description: 
  * @FilePath: \nodejs\api\config\db.js
  */
 const mongoose = require('mongoose');
 mongoose.set('strictQuery',true);
-mongoose.connect('mongodb://8.139.5.190:27017/blog')
+mongoose.connect('mongodb://localhost:27017/reactblog')
 var db = mongoose.connection;
 // 连接成功blog
 db.on('open', function(){
