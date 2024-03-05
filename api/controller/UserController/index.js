@@ -78,12 +78,12 @@ class UserController {
             // 检查是否存在相同的用户名或电子邮件
             const existingUser = await UserModel.findOne({ $or: [{ email }] });
             if (existingUser) {
-                return res.status(400).json({ error: '电子邮件重复' });
+                return res.status(201).json({ msg: '电子邮件重复' });
             }
             // 创建新用户
             const newUser = new UserModel({ username, email, password });
             const savedUser = await newUser.save();
-            return res.status(200).json(savedUser);
+            return res.status(200).json({msg:"注册成功！",data: savedUser });
         } catch (error) {
             return res.status(500).json({ error: 'Internal server error' });
         }
@@ -107,7 +107,7 @@ class UserController {
             // 生成 JWT 令牌
             const token = jwt.sign({ userId: data._id }, 'secret-key', { expiresIn: '24h' });
             // 返回令牌给客户端
-            return res.status(401).json({ token });
+            return res.status(200).json({ token:token,msg: '登录成功！' });
         })
     }
 

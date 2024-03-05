@@ -1,5 +1,6 @@
 var createError = require('http-errors');
-var express = require('express');
+const express = require('express');
+const cors = require('cors');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -12,6 +13,8 @@ var uploadApi = require('./api/routes/upload')
 
 
 var app = express();
+
+app.use(cors())
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

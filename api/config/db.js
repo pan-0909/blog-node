@@ -8,7 +8,7 @@
  */
 const mongoose = require('mongoose');
 mongoose.set('strictQuery',true);
-mongoose.connect('mongodb://8.139.5.190:27017/blog')
+mongoose.connect('mongodb://127.0.0.1:27017/blog')
 var db = mongoose.connection;
 // 连接成功blog
 db.on('open', function(){
