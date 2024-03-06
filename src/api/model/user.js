@@ -10,6 +10,9 @@ var userSchema = new Schema({
     },
     email:{
         type:String
+    },
+    createTime:{
+        type:Date
     }
 });
 

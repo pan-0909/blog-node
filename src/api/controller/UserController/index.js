@@ -78,10 +78,11 @@ class UserController {
             // 检查是否存在相同的用户名或电子邮件
             const existingUser = await UserModel.findOne({ $or: [{ email }] });
             if (existingUser) {
-                return res.status(201).json({ msg: '电子邮件重复' });
+                return res.status(201).json({ msg: '此电子邮箱已被注册' });
             }
+        const createTime = new Date();
             // 创建新用户
-            const newUser = new UserModel({ username, email, password });
+            const newUser = new UserModel({ username, email, password,createTime });
             const savedUser = await newUser.save();
             return res.status(200).json({msg:"注册成功！",data: savedUser });
         } catch (error) {
