@@ -1,5 +1,6 @@
 const UserModel = require('../../model/user')
 const jwt = require('jsonwebtoken');
+const formatDate = require('../../../utils/formatDate.ts');
 class UserController {
 
     /******* 
@@ -80,7 +81,7 @@ class UserController {
             if (existingUser) {
                 return res.status(201).json({ msg: '此电子邮箱已被注册' });
             }
-        const createTime = new Date();
+        const createTime = formatDate(new Date());
             // 创建新用户
             const newUser = new UserModel({ username, email, password,createTime });
             const savedUser = await newUser.save();
