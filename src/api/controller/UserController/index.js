@@ -1,6 +1,6 @@
 const UserModel = require('../../model/user')
 const jwt = require('jsonwebtoken');
-const formatDate = require('../../../utils/formatDate.ts');
+const {formatDate} = require('../../../utils/formatDate.js');
 class UserController {
 
     /******* 

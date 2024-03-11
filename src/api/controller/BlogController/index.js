@@ -1,4 +1,5 @@
 const BlogModel = require('../../model/blog')
+const {formatDate} = require('../../../utils/formatDate')
 class BlogController {
 
     /******* 
@@ -42,9 +43,10 @@ class BlogController {
      * @return {*}
      */
     static async createBlog(req, res) {
-        const { title, label, content, createTime, author, userId, labelId } = req.body;
+        const { title, label, content, author, userId } = req.body;
         try {
-            const newBlog = new BlogModel({ title, label, content, createTime, author, userId, labelId });
+            const createTime = formatDate(new Date())
+            const newBlog = new BlogModel({ title, label, content, createTime, author, userId });
             console.log(newBlog);
             const savedBlog = await newBlog.save();
             return res.status(200).json({ message: "创建成功", savedBlog });
