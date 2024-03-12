@@ -11,6 +11,7 @@ class BlogController {
      * @param {*} data
      */
     static async getBlogList(req, res, next) {
+        console.log(req);
         BlogModel.find({}, function (req, data) {
             res.send(data)
         })
@@ -47,9 +48,8 @@ class BlogController {
         try {
             const createTime = formatDate(new Date())
             const newBlog = new BlogModel({ title, label, content, createTime, author, userId });
-            console.log(newBlog);
             const savedBlog = await newBlog.save();
-            return res.status(200).json({ message: "创建成功", savedBlog });
+            return res.status(200).json({ msg: "创建成功", savedBlog });
         } catch (error) {
             return res.status(500).json({ error: 'Internal server error' });
         }

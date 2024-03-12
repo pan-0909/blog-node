@@ -6,7 +6,7 @@ var blogSchema = new Schema({
         type: String,
     },
     label: {
-        type: String
+        type: Array
     },
     content: {
         type: String
@@ -18,9 +18,6 @@ var blogSchema = new Schema({
         type: String
     },
     userId: {
-        type: Number
-    },
-    labelId: {
         type: Number
     },
     likes: { type: Number, default: 0 },
