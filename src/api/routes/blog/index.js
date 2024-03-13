@@ -7,7 +7,7 @@ const {BlogController} = require('../../controller/BlogController')
 router.get('/getBlogList',BlogController.getBlogList);
 
 /* 查某个blog */
-router.get('/getBlogById/:id',BlogController.getBlogById );
+router.get('/getBlogById/:_id',BlogController.getBlogById );
 
 /* 创建blog */
 router.post('/createBlog',authenticateToken,BlogController.createBlog );

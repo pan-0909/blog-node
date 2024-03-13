@@ -24,7 +24,7 @@ class BlogController {
      */
     static async getBlogById(req, res) {
         // _id要和数据库中的字段保持一致
-        const _id = req.params.id;
+        const _id = req.params._id;
         try {
             const blog = await BlogModel.findById(_id);
             if (!blog) {
