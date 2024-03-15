@@ -1,6 +1,16 @@
 const UserModel = require('../../model/user')
 const jwt = require('jsonwebtoken');
-const {formatDate} = require('../../../utils/formatDate.js');
+const { formatDate } = require('../../../utils/formatDate.js');
+const { connectRedis, setAsync, getAsync } = require('../../config/redis.js');
+
+
+/**
+ * 将令牌存储到 Redis 中
+ * @param userId 用户ID，作为 Redis 中存储令牌的键
+ * @param token  需要存储的 JWT 令牌
+ * 该函数不返回任何内容
+ */
+
 class UserController {
 
     /******* 
@@ -81,11 +91,11 @@ class UserController {
             if (existingUser) {
                 return res.status(201).json({ msg: '此电子邮箱已被注册' });
             }
-        const createTime = formatDate(new Date());
+            const createTime = formatDate(new Date());
             // 创建新用户
-            const newUser = new UserModel({ username, email, password,createTime });
+            const newUser = new UserModel({ username, email, password, createTime });
             const savedUser = await newUser.save();
-            return res.status(200).json({msg:"注册成功！",data: savedUser });
+            return res.status(200).json({ msg: "注册成功！", data: savedUser });
         } catch (error) {
             return res.status(500).json({ error: 'Internal server error' });
         }
@@ -98,19 +108,35 @@ class UserController {
      * @param {*} req 
      * @param {*} res
      */
-    static login(req, res) {
+
+
+    static async login(req, res) {
         const { email, password } = req.body;
+        let token = ''
+        let userId = ''
         // 在用户集合中查找匹配的用户
-        UserModel.findOne({ email, password }, function (req, data) {
-            console.log(data);
-            if (!data) {
-                return res.status(401).json({ error: '邮箱或密码错误' });
-            }
+        const user = await UserModel.findOne({ email, password });
+        if (!user) {
+            return res.status(401).json({ error: '邮箱或密码错误' });
+        } else {
+            userId = user._id.toString()
             // 生成 JWT 令牌
-            const token = jwt.sign({ userId: data._id }, 'secret-key', { expiresIn: '24h' });
+            token = jwt.sign({ userId: userId }, 'secret-key', { expiresIn: '24h' });
+            console.log(token);
+            console.log(userId, 11);
+
+            // 将 JWT 令牌存入 Redis
+            console.log(userId, token);
             // 返回令牌给客户端
-            return res.status(200).json({ token:token,msg: '登录成功！' });
-        })
+            try {
+                const client = await connectRedis();
+                await setAsync(client, userId, token);
+                client.quit();
+            } catch (error) {
+                console.error('操作出错:', error);
+            }
+            res.status(200).json({ token: token, msg: '登录成功！' });
+        }
     }
 
     /******* 
