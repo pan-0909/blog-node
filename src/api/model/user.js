@@ -13,7 +13,20 @@ var userSchema = new Schema({
     },
     createTime:{
         type:Date
+    },
+    github:{
+        type:String,
+        default:''
+    },
+    label:{
+        type:Array,
+        default:[],
+    },
+    faceImg:{
+        type:String,
+        default:''
     }
+
 });
 
 

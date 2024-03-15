@@ -2,8 +2,8 @@ const UserModel = require('../../model/user')
 const jwt = require('jsonwebtoken');
 const { formatDate } = require('../../../utils/formatDate.js');
 const { connectRedis, setAsync, getAsync } = require('../../config/redis.js');
-
-
+const {key} = require('../../../utils/key.js')
+const {decrypt} = require('../../../utils/decrypt.js')
 /**
  * 将令牌存储到 Redis 中
  * @param userId 用户ID，作为 Redis 中存储令牌的键
@@ -50,10 +50,9 @@ class UserController {
      * @param {*} res
      */
     static async getInfoById(req, res) {
-        // _id要和数据库中的字段保持一致
-        const _id = req.params.id;
+        const userId = req.userId; // 获取存储在请求对象中的用户 ID
         try {
-            const user = await UserModel.findById(_id);
+            const user = await UserModel.findById(userId);
             if (!user) {
                 return res.status(404).json({ error: '用户不存在！' });
             }
@@ -121,10 +120,7 @@ class UserController {
         } else {
             userId = user._id.toString()
             // 生成 JWT 令牌
-            token = jwt.sign({ userId: userId }, 'secret-key', { expiresIn: '24h' });
-            console.log(token);
-            console.log(userId, 11);
-
+            token = jwt.sign({ userId: userId }, key, { expiresIn: '24h' });
             // 将 JWT 令牌存入 Redis
             console.log(userId, token);
             // 返回令牌给客户端

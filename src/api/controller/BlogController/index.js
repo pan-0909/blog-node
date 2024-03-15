@@ -44,14 +44,16 @@ class BlogController {
      * @return {*}
      */
     static async createBlog(req, res) {
-        const { title, label, content, author, userId } = req.body;
+        const userId = req.userId; // 获取存储在请求对象中的用户 ID
+        console.log(userId,222222);
+        const { title, label, content, author } = req.body;
         try {
             const createTime = formatDate(new Date())
             const newBlog = new BlogModel({ title, label, content, createTime, author, userId });
             const savedBlog = await newBlog.save();
             return res.status(200).json({ msg: "创建成功", savedBlog });
         } catch (error) {
-            return res.status(500).json({ error: 'Internal server error' });
+            return res.status(500).json({ error: error });
         }
     }
 

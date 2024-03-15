@@ -6,7 +6,7 @@ const {UserController}  = require('../../controller/UserController')
 router.get('/getUserList',authenticateToken,UserController.getUserList );
 
 /* 查用户数据 */
-router.get('/getUserInfo/:id', authenticateToken, UserController.getInfoById);
+router.get('/getUserInfo', authenticateToken, UserController.getInfoById);
 
 // 更新用户资料
 router.put('/updateUserInfo', authenticateToken, UserController.updateUserInfo);
