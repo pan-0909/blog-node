@@ -131,7 +131,7 @@ class UserController {
             } catch (error) {
                 console.error('操作出错:', error);
             }
-            res.status(200).json({ token: token, msg: '登录成功！' });
+            res.status(200).json({ token: token, msg: '登录成功！',userId:userId });
         }
     }
 
