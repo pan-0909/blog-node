@@ -70,7 +70,7 @@ class BlogController {
             if (!deletedBlog) {
                 return res.status(404).json({ error: '博客不存在' });
             }
-            return res.json({ message: '博客已成功删除!' });
+            return res.json({ msg: '博客已成功删除!' });
         } catch (error) {
             return res.status(500).json({ error: '删除博客时出错' });
         }
@@ -92,7 +92,7 @@ class BlogController {
             if (!updatedBlog) {
                 return res.status(404).json({ error: '博客不存在' });
             }
-            res.json({ message: '博客已成功更新', blog: updatedBlog });
+            res.json({ msg: '博客已成功更新', blog: updatedBlog });
         } catch (error) {
             res.status(500).json({ error: '更新博客时出错' });
         }
@@ -157,11 +157,12 @@ class BlogController {
     static async lickBlog(req, res) {
         try {
             const blogId = req.body.blogId;
-            const userId = req.body.userId;
+            const userId = req.userId;
+            console.log(blogId,userId,"-----------------------------------");
             // 查询博客
             const blog = await BlogModel.findById(blogId);
             if (!blog) {
-                return res.status(404).json({ message: '博客不存在' });
+                return res.status(404).json({ msg: '博客不存在' });
             }
 
             // 检查当前用户是否已经点赞了该博客
@@ -174,7 +175,7 @@ class BlogController {
                 // 保存更新后的博客
                 await blog.save();
                 // 将当前用户添加到已点赞用户列表中
-                return res.status(200).json({ message: '取消点赞成功！', likes: blog.likes });
+                return res.status(200).json({ msg: '取消点赞成功！', likes: blog.likes });
             } else {
                 // 增加点赞数
                 blog.likes++;
@@ -182,11 +183,11 @@ class BlogController {
                 blog.likedBy.push(userId);
                 // 保存更新后的博客
                 await blog.save();
-                return res.json({ message: '点赞成功', likes: blog.likes });
+                return res.json({ msg: '点赞成功', likes: blog.likes });
             }
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ message: '服务器错误' });
+            return res.status(500).json({ msg: '服务器错误' });
         }
 
     }
@@ -203,7 +204,7 @@ class BlogController {
             // 查询博客
             const blog = await BlogModel.findById(blogId);
             if (!blog) {
-                return res.status(404).json({ message: '博客不存在' });
+                return res.status(404).json({ msg: '博客不存在' });
             }
 
             // 检查当前用户是否已经点赞了该博客
@@ -216,7 +217,7 @@ class BlogController {
                 // 保存更新后的博客
                 await blog.save();
                 // 将当前用户添加到已点赞用户列表中
-                return res.status(200).json({ message: '取消收藏成功！', collects: blog.collects });
+                return res.status(200).json({ msg: '取消收藏成功！', collects: blog.collects });
             } else {
                 // 增加点赞数
                 blog.collects++;
@@ -224,10 +225,10 @@ class BlogController {
                 blog.collectedBy.push(userId);
                 // 保存更新后的博客
                 await blog.save();
-                return res.json({ message: '收藏成功', collects: blog.collects });
+                return res.json({ msg: '收藏成功', collects: blog.collects });
             }
         } catch (error) {
-            return res.status(500).json({ message: error });
+            return res.status(500).json({ msg: error });
         }
 
     }
@@ -244,7 +245,7 @@ class BlogController {
             const collectedBlogs = await BlogModel.find({ likedBy: userId });
             return res.status(200).json({ collectedBlogs });
         } catch (error) {
-            return res.status(500).json({ message: error });
+            return res.status(500).json({ msg: error });
         }
     }
 

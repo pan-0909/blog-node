@@ -122,7 +122,7 @@ class UserController {
             // 生成 JWT 令牌
             token = jwt.sign({ userId: userId }, key, { expiresIn: '24h' });
             // 将 JWT 令牌存入 Redis
-            console.log(userId, token);
+            // console.log(userId, token);
             // 返回令牌给客户端
             try {
                 const client = await connectRedis();
