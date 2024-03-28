@@ -1,5 +1,5 @@
 const BlogModel = require('../../model/blog')
-const {formatDate} = require('../../../utils/formatDate')
+const { formatDate } = require('../../../utils/formatDate')
 class BlogController {
 
     /******* 
@@ -11,9 +11,13 @@ class BlogController {
      * @param {*} data
      */
     static async getBlogList(req, res, next) {
-        console.log(req);
         BlogModel.find({}, function (req, data) {
-            res.send(data)
+            // 计算每篇博客的评论数量并添加到结果中
+            const blogListWithCommentNum = data.map(blog => {
+                const commentNum = blog.commentList.length;
+                return { ...blog.toObject(), commentNum };
+            });
+            res.send(blogListWithCommentNum)
         })
     }
 
@@ -45,7 +49,6 @@ class BlogController {
      */
     static async createBlog(req, res) {
         const userId = req.userId; // 获取存储在请求对象中的用户 ID
-        console.log(userId,222222);
         const { title, label, content, author } = req.body;
         try {
             const createTime = formatDate(new Date())
@@ -122,7 +125,6 @@ class BlogController {
      */
     static async getBlogByLabelId(req, res) {
         const labelId = req.params.id;
-        console.log(labelId);
         try {
             const blogs = await BlogModel.find({ labelId: labelId });
             return res.json(blogs);
@@ -139,7 +141,6 @@ class BlogController {
      */
     static async getBlogByTitle(req, res) {
         const title = req.query.title;
-        console.log(title);
         try {
             const blogs = await BlogModel.find({ title: { $regex: title, $options: 'i' } });
             return res.json(blogs);
@@ -158,7 +159,6 @@ class BlogController {
         try {
             const blogId = req.body.blogId;
             const userId = req.userId;
-            console.log(blogId,userId,"-----------------------------------");
             // 查询博客
             const blog = await BlogModel.findById(blogId);
             if (!blog) {
@@ -167,7 +167,6 @@ class BlogController {
 
             // 检查当前用户是否已经点赞了该博客
             const hasLiked = blog.likedBy.includes(userId);
-            console.log(hasLiked);
             if (hasLiked) {
                 // 减少点赞数
                 blog.likes--;
@@ -183,7 +182,7 @@ class BlogController {
                 blog.likedBy.push(userId);
                 // 保存更新后的博客
                 await blog.save();
-                return res.json({ msg: '点赞成功', likes: blog.likes });
+                return res.json({ msg: '点赞成功！', likes: blog.likes });
             }
         } catch (error) {
             console.error(error);
@@ -209,7 +208,6 @@ class BlogController {
 
             // 检查当前用户是否已经点赞了该博客
             const hasCollected = blog.collectedBy.includes(userId);
-            console.log(hasCollected);
             if (hasCollected) {
                 // 减少点赞数
                 blog.collects--;
@@ -249,5 +247,44 @@ class BlogController {
         }
     }
 
+    /******* 
+     * @description: 根据博客id插入评论
+     * @param {*} req
+     * @param {*} res
+     * @return {*} res
+     */
+    static async getcommentListByBlogId(req, res) {
+        try {
+            console.log(req.body);
+            const blogId = req.body.blogId;
+            const content = req.body.content;
+            const userId = req.userId;
+            const faceImg = req.body.faceImg;
+            const username = req.body.username;
+            const createTime = formatDate(new Date())
+            const newComment = {
+                content: content,
+                userId: userId,
+                username,
+                faceImg,
+                createTime
+            }
+            // 查询博客
+            const blog = await BlogModel.findById(blogId);
+            if (!blog) {
+                return res.status(404).json({ msg: '博客不存在' });
+            }
+
+            // 将评论插入到博客的评论列表中newComment
+            blog.commentList.push(newComment);
+
+            await blog.save();
+            // 将当前用户添加到已点赞用户列表中
+            return res.status(200).json({ msg: '评论成功！' });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ msg: '服务器错误' });
+        }
+    }
 }
 module.exports = { BlogController }

@@ -1,3 +1,11 @@
+/*
+ * @Author: xx
+ * @Date: 2024-03-18 22:37:44
+ * @LastEditors: Do not edit
+ * @LastEditTime: 2024-03-28 19:16:22
+ * @Description: 
+ * @FilePath: \blog-node\src\api\routes\blog\index.js
+ */
 const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('../../../middlewares/authMiddleware');
@@ -35,4 +43,7 @@ router.post('/collectBlog',authenticateToken,BlogController.collectBlog)
 
 //查询用户收藏的博客
 router.get('/getCollectBlogByUserId/:userId',authenticateToken,BlogController.getCollectBlogByUserId)
+
+//根据博客id插入评论
+router.post('/getcommentListByBlogId',authenticateToken,BlogController.getcommentListByBlogId)
 module.exports = router;

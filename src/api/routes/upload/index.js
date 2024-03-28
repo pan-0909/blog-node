@@ -25,7 +25,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 uploadApi.post('/upload', upload.single('file'), function (req, res) {
   const file = req.file;
-  console.log(file);
   // 获取文件的Buffer数据和文件名
   const fileBuffer = fs.readFileSync(file.path);
   const filename = Date.now() + '-' + file.originalname;
