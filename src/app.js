@@ -1,3 +1,11 @@
+/*
+ * @Author: xx
+ * @Date: 2024-03-18 22:37:44
+ * @LastEditors: Do not edit
+ * @LastEditTime: 2024-03-29 22:08:59
+ * @Description: 
+ * @FilePath: \blog-node\src\app.js
+ */
 var createError = require('http-errors');
 const express = require('express');
 const cors = require('cors');
@@ -27,7 +35,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/user',userRouter)
 app.use('/blog',blogRouter)
-app.use('/upload',uploadApi)
+app.use('/upload',uploadApi)  
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
