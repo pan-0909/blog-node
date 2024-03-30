@@ -19,26 +19,34 @@ class UserController {
      * @param {*} res
      */
     static async updateUserInfo(req, res) {
+        console.log(req.body);
         try {
-            const token = req.headers.authorization;
             const newUsername = req.body.username;
-
-            // 解码 JWT
-            const decodedToken = jwt.decode(token, { complete: true });
-            const userId = decodedToken.payload.userId;
-
+            const newGithub = req.body.github;
+            const newEmail = req.body.email;
+            const newLabel = req.body.label;
+            const newIntroduction = req.body.introduction;
+            const newFaceImg = req.body.faceImg;
+            const userId = req.userId;
+            console.log(userId);
             const user = await UserModel.findOneAndUpdate(
                 { _id: userId },
-                { username: newUsername },
+                {
+                    username: newUsername,
+                    github: newGithub,
+                    email: newEmail,
+                    label: newLabel,
+                    introduction: newIntroduction,
+                    faceImg: newFaceImg
+                },
                 { new: true }
             );
-
             if (!user) {
                 return res.status(404).json({ error: '用户不存在！' });
             }
-
-            return res.json(user);
+            return res.status(200).json({ msg: "修改成功！", data: user });
         } catch (error) {
+            console.log(error);
             return res.status(500).json({ error: 'Internal server error' });
         }
     }

@@ -1,3 +1,11 @@
+/*
+ * @Author: xx
+ * @Date: 2024-03-18 22:37:44
+ * @LastEditors: Do not edit
+ * @LastEditTime: 2024-03-30 17:11:28
+ * @Description: 
+ * @FilePath: \blog-node\src\api\model\user.js
+ */
 var mongoose = require('../config/db');
 var Schema = mongoose.Schema;
 // 声明一个数据集 对象
@@ -25,6 +33,9 @@ var userSchema = new Schema({
     faceImg:{
         type:String,
         default:''
+    },
+    introduction:{
+        type:String,
     }
 
 });
