@@ -2,7 +2,7 @@
  * @Author: xx
  * @Date: 2024-03-18 22:37:44
  * @LastEditors: Do not edit
- * @LastEditTime: 2024-03-28 19:16:22
+ * @LastEditTime: 2024-04-01 22:54:52
  * @Description: 
  * @FilePath: \blog-node\src\api\routes\blog\index.js
  */
@@ -27,7 +27,7 @@ router.delete('/deleteBlog/:id',authenticateToken,BlogController.deleteBlogById 
 router.put('/updateBlog/:id',authenticateToken,BlogController.updateBlogById)
 
 // 根据用户id查找个人博客
-router.get('/getBlogByUserId/:id',authenticateToken,BlogController.getBlogByUserId)
+router.post('/getBlogByUserId',authenticateToken,BlogController.getBlogByUserId)
 
 // 根据分类id查找博客
 router.get('/getBlogByLabelId/:id',BlogController.getBlogByLabelId)

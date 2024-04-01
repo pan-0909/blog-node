@@ -103,17 +103,39 @@ class BlogController {
 
     /******* 
      * @description: 根据用户id查找个人博客
-     * @param {*} req
-     * @param {*} res
-     * @return {*}
      */
     static async getBlogByUserId(req, res) {
-        const userId = req.params.id;
+        const userId = req.userId;
+        const page = req.body.page || 1; // 默认页码为1
+        const pageSize = req.body.pageSize || 10; // 默认每页显示10条记录
+
         try {
-            const userBlogs = await BlogModel.find({ userId: userId });
-            return res.json(userBlogs);
+            // 获取总数
+            const totalBlogs = await BlogModel.countDocuments({ userId: userId });
+            // 获取总页数
+            const totalPages = Math.ceil(totalBlogs / pageSize);
+            // 计算要跳过的博客数
+            const skip = (page - 1) * pageSize;
+            // 返回当前的博客list
+            const blogList = await BlogModel.find({ userId: userId })
+                .skip(skip)
+                .limit(pageSize);
+
+            const blogListWithCommentNum = blogList.map(blog => {
+                const commentNum = blog.commentList.length;
+                return { ...blog.toObject(), commentNum };
+            });
+
+            return res.json({
+                msg: '查询个人博客成功!',
+                totalBlogs,
+                blogList:blogListWithCommentNum,
+                totalPages,
+                currentPage: page
+            });
         } catch (error) {
-            return res.status(500).json({ error: '查找个人博客时出错' });
+            console.log(error);
+            return res.status(500).json({ msg: '查找个人博客时出错' });
         }
     }
 
