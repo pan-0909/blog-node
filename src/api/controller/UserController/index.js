@@ -125,12 +125,15 @@ class UserController {
         const user = await UserModel.findOne({ email, password });
         console.log(user);
         if (!user) {
-            return res.status(401).json({ error: '邮箱或密码错误' });
+            return res.status(201).json({ msg: '邮箱或密码错误' });
         } else {
             userId = user._id.toString()
             const username = user.username.toString()
             const faceImg = user.faceImg.toString()
             const email = user.email.toString()
+            const github = user.github.toString()
+            const introduction = user.introduction.toString()
+            const label = user.label.toString()
             // 生成 JWT 令牌
             token = jwt.sign({ userId: userId }, key, { expiresIn: '24h' });
             // 将 JWT 令牌存入 Redis
@@ -143,7 +146,7 @@ class UserController {
             } catch (error) {
                 console.error('操作出错:', error);
             }
-            res.status(200).json({ token: token, msg: '登录成功！', userId: userId, userInfo: { username: username, faceImg: faceImg, email: email } });
+            res.status(200).json({ token: token, msg: '登录成功！', userId: userId, userInfo: { username: username, faceImg: faceImg, email: email,github:github,introduction:introduction,label:label } });
         }
     }
 
